@@ -10,13 +10,15 @@ import {
 } from "react-native";
 import bg from "./assets/bg.png";
 
+const emptyMap = [
+  // defining my 2D grid/matrix
+  ["", "", ""], // 1st row
+  ["", "", ""], // 2nd row
+  ["", "", ""], // 3rd row
+];
+
 export default function App() {
-  const [map, setMap] = useState([
-    // defining my 2D grid/matrix
-    ["", "", ""], // 1st row
-    ["", "", ""], // 2nd row
-    ["", "", ""], // 3rd row
-  ]);
+  const [map, setMap] = useState(emptyMap);
 
   const [currentTurn, setCurrentTurn] = useState("x");
 
@@ -45,16 +47,94 @@ export default function App() {
       const isRowOWinning = map[i].every((cell) => cell == "o");
 
       if (isRowXWinning) {
-        Alert.alert("X won. Row:", i);
+        gameWon("x");
       }
 
       if (isRowOWinning) {
-        Alert.alert("O won. Row:", i);
+        gameWon("o");
       }
     }
     // check colums
-    for (let i = 0; i < 3; i++) {}
+    for (let col = 0; col < 3; col++) {
+      let isColumnXWinner = true;
+      let isColumnYWinner = true;
+
+      for (let row = 0; row < 3; row++) {
+        if (map[row][col] !== "x") {
+          isColumnXWinner = false;
+        }
+
+        if (map[row][col] !== "o") {
+          isColumnYWinner = false;
+        }
+      }
+
+      if (isColumnXWinner) {
+        gameWon("x");
+        break;
+      }
+
+      if (isColumnYWinner) {
+        gameWon("o");
+        break;
+      }
+    }
+
     // check diagonals
+    let isDiagonal1OWinining = true;
+    let isDiagonal1XWinining = true;
+    let isDiagonal2OWinining = true;
+    let isDiagonal2XWinining = true;
+    for (i = 0; i < 3; i++) {
+      if (map[i][i] !== "o") {
+        isDiagonal1OWinining = false;
+      }
+
+      if (map[i][i] !== "x") {
+        isDiagonal1XWinining = false;
+      }
+      // length - col - 1 for the column
+      if (map[i][2 - i] !== "o") {
+        isDiagonal2OWinining = false;
+      }
+
+      if (map[i][2 - i] !== "x") {
+        isDiagonal2XWinining = false;
+      }
+    }
+
+    if (isDiagonal1OWinining) {
+      gameWon("o");
+    }
+    if (isDiagonal1XWinining) {
+      gameWon("x");
+    }
+    if (isDiagonal2OWinining) {
+      gameWon("o");
+    }
+    if (isDiagonal2XWinining) {
+      gameWon("o");
+    }
+  };
+
+  const gameWon = (player) => {
+    Alert.alert(`Hurray`, `Player ${player} won`, [
+      {
+        text: "Play Again",
+        onPress: resetGame,
+      },
+    ]);
+  };
+
+  // reset game
+  const resetGame = () => {
+    setMap([
+      // defining my 2D grid/matrix
+      ["", "", ""], // 1st row
+      ["", "", ""], // 2nd row
+      ["", "", ""], // 3rd row
+    ]);
+    setCurrentTurn("x");
   };
 
   return (
@@ -63,9 +143,10 @@ export default function App() {
         <View style={styles.map}>
           {map.map((row, rowIndex) => (
             // Now we map for each cell in that row
-            <View style={styles.row}>
+            <View key={`row-${rowIndex}`} style={styles.row}>
               {row.map((cell, columnIndex) => (
                 <Pressable
+                  key={`row-${rowIndex}-col-${columnIndex}`}
                   onPress={() => onPress(rowIndex, columnIndex)}
                   style={styles.cell}
                 >
