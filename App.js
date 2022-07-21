@@ -7,9 +7,11 @@ import {
   View,
   Pressable,
   Alert,
+  SafeAreaView,
 } from "react-native";
 import bg from "./assets/bg.png";
 import { Audio } from "expo-av";
+import Cell from "./src/components/Cell";
 
 const emptyMap = [
   // defining my 2D grid/matrix
@@ -45,7 +47,7 @@ export default function App() {
   // }, [sound]);
 
   const onPress = (rowIndex, columnIndex) => {
-    console.warn("hello", rowIndex, columnIndex);
+    // console.warn("hello", rowIndex, columnIndex);
     if (map[rowIndex][columnIndex] !== "") {
       Alert.alert("Position already occupied");
       return;
@@ -174,30 +176,32 @@ export default function App() {
     setCurrentTurn("x");
   };
 
+  const botTurn = () => {};
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ImageBackground source={bg} style={styles.bg} resizeMode="contain">
+        <Text
+          style={{
+            fontSize: 24,
+            color: "white",
+            marginBottom: "auto",
+            position: "absolute",
+            top: 30,
+          }}
+        >
+          Current Turn: {currentTurn.toUpperCase()}
+        </Text>
         <View style={styles.map}>
           {map.map((row, rowIndex) => (
             // Now we map for each cell in that row
             <View key={`row-${rowIndex}`} style={styles.row}>
               {row.map((cell, columnIndex) => (
-                <Pressable
+                <Cell
                   key={`row-${rowIndex}-col-${columnIndex}`}
+                  cell={cell}
                   onPress={() => onPress(rowIndex, columnIndex)}
-                  style={styles.cell}
-                >
-                  {/* <View style={styles.circle} /> */}
-                  {cell == "o" && <View style={styles.circle} />}
-                  {cell == "x" && (
-                    <View style={styles.cross}>
-                      <View style={styles.crossLine} />
-                      <View
-                        style={[styles.crossLine, styles.crossLineReversed]}
-                      />
-                    </View>
-                  )}
-                </Pressable>
+                />
               ))}
             </View>
           ))}
@@ -210,7 +214,7 @@ export default function App() {
         </View>
       </ImageBackground>
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -235,42 +239,5 @@ const styles = StyleSheet.create({
   row: {
     flex: 1,
     flexDirection: "row",
-  },
-  cell: {
-    width: 100,
-    height: 100,
-    flex: 1,
-  },
-  circle: {
-    flex: 1,
-    borderRadius: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    margin: 10,
-    borderWidth: 10,
-    borderColor: "#87E43A",
-  },
-  cross: {
-    flex: 1,
-  },
-  crossLine: {
-    position: "absolute",
-    left: "48%",
-    width: 10,
-    height: "100%",
-    borderRadius: 5,
-    backgroundColor: "#F54D62",
-    transform: [
-      {
-        rotate: "45deg",
-      },
-    ],
-  },
-  crossLineReversed: {
-    transform: [
-      {
-        rotate: "-45deg",
-      },
-    ],
   },
 });
