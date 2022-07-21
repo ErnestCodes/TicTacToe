@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ImageBackground,
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   Alert,
 } from "react-native";
 import bg from "./assets/bg.png";
+import { Audio } from "expo-av";
 
 const emptyMap = [
   // defining my 2D grid/matrix
@@ -21,6 +22,27 @@ export default function App() {
   const [map, setMap] = useState(emptyMap);
 
   const [currentTurn, setCurrentTurn] = useState("x");
+  const [sound, setSound] = useState(null);
+
+  async function playSound() {
+    console.log("Loading Sound");
+    const { sound } = await Audio.Sound.createAsync(
+      require("./assets/sounds/cash.mp3")
+    );
+    setSound(sound);
+
+    // console.log("Playing Sound");
+    await sound.playAsync();
+  }
+
+  // useEffect(() => {
+  //   return sound
+  //     ? () => {
+  //         console.log("Unloading Sound");
+  //         sound.unloadAsync();
+  //       }
+  //     : undefined;
+  // }, [sound]);
 
   const onPress = (rowIndex, columnIndex) => {
     console.warn("hello", rowIndex, columnIndex);
@@ -37,21 +59,26 @@ export default function App() {
 
     setCurrentTurn(currentTurn == "x" ? "o" : "x");
 
-    checkWinningState();
+    const winner = getWinner();
+    if (winner) {
+      gameWon(winner);
+    } else {
+      checkTieState();
+    }
   };
 
-  const checkWinningState = () => {
+  const getWinner = () => {
     // check rows
     for (let i = 0; i < 3; i++) {
       const isRowXWinning = map[i].every((cell) => cell == "x");
       const isRowOWinning = map[i].every((cell) => cell == "o");
 
       if (isRowXWinning) {
-        gameWon("x");
+        return "x";
       }
 
       if (isRowOWinning) {
-        gameWon("o");
+        return "o";
       }
     }
     // check colums
@@ -70,12 +97,12 @@ export default function App() {
       }
 
       if (isColumnXWinner) {
-        gameWon("x");
+        return "x";
         break;
       }
 
       if (isColumnYWinner) {
-        gameWon("o");
+        return "o";
         break;
       }
     }
@@ -103,27 +130,37 @@ export default function App() {
       }
     }
 
-    if (isDiagonal1OWinining) {
-      gameWon("o");
+    if (isDiagonal1OWinining || isDiagonal2OWinining) {
+      return "o";
     }
-    if (isDiagonal1XWinining) {
-      gameWon("x");
+    if (isDiagonal1XWinining || isDiagonal2XWinining) {
+      return "x";
     }
-    if (isDiagonal2OWinining) {
-      gameWon("o");
-    }
-    if (isDiagonal2XWinining) {
-      gameWon("o");
+  };
+
+  const checkTieState = () => {
+    // if no cell contains an empty string
+    if (!map.some((row) => row.some((cell) => cell === ""))) {
+      Alert.alert(`It's a Tie`, `tie`, [
+        {
+          text: "Restart",
+          onPress: resetGame,
+        },
+      ]);
     }
   };
 
   const gameWon = (player) => {
     Alert.alert(`Hurray`, `Player ${player} won`, [
       {
-        text: "Play Again",
+        text: "Reset",
         onPress: resetGame,
       },
     ]);
+
+    if (player == "x") {
+      playSound();
+    }
   };
 
   // reset game
