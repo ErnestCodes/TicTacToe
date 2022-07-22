@@ -30,17 +30,19 @@ const copyArray = (original) => {
 
 export default function HomeScreen() {
   const [map, setMap] = useState(emptyMap);
-  const [gameMode, setGameMode] = useState("LOCAL");
+  const [gameMode, setGameMode] = useState("BOT_MEDIUM");
   const [gameSetting, setGameSetting] = useState();
   // Local, BOT_EASY, BOT_MEDIUM
   const [currentTurn, setCurrentTurn] = useState("x");
   const [sound, setSound] = useState(null);
 
+  useEffect(() => resetGame(), [gameMode]);
+
   useEffect(() => {
-    if (currentTurn == "o") {
+    if (currentTurn == "o" && gameMode !== "LOCAL") {
       botTurn();
     }
-  }, [currentTurn]);
+  }, [currentTurn, gameMode]);
 
   useEffect(() => {
     const winner = getWinner(map);
@@ -223,33 +225,36 @@ export default function HomeScreen() {
 
     let chosenOption;
 
-    // Attack
-    possiblePositions.forEach((possiblePosition) => {
-      const mapCopy = copyArray(map);
-      mapCopy[possiblePosition.row][possiblePosition.col] = "o";
-
-      const winner = getWinner(mapCopy);
-      if (winner === "o") {
-        // defend that position
-        chosenOption = possiblePosition;
-      }
-    });
-
-    // Defend
-    // Check if the opponents WINS if it takes one of the possible position
-    if (!chosenOption) {
+    if (gameMode === "BOT_MEDIUM") {
+      // Attack
       possiblePositions.forEach((possiblePosition) => {
         const mapCopy = copyArray(map);
-        mapCopy[possiblePosition.row][possiblePosition.col] = "x";
+        mapCopy[possiblePosition.row][possiblePosition.col] = "o";
 
         const winner = getWinner(mapCopy);
-        if (winner === "x") {
+        if (winner === "o") {
           // defend that position
           chosenOption = possiblePosition;
         }
       });
+
+      // Defend
+      // Check if the opponents WINS if it takes one of the possible position
+      if (!chosenOption) {
+        possiblePositions.forEach((possiblePosition) => {
+          const mapCopy = copyArray(map);
+          mapCopy[possiblePosition.row][possiblePosition.col] = "x";
+
+          const winner = getWinner(mapCopy);
+          if (winner === "x") {
+            // defend that position
+            chosenOption = possiblePosition;
+          }
+        });
+      }
     }
 
+    // resetGame();
     // choose the best option
     if (!chosenOption) {
       chosenOption =
@@ -264,51 +269,98 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground source={bg} style={styles.bg} resizeMode="contain">
-        <View
-          style={{
-            color: "#000",
-            marginBottom: "auto",
-            position: "absolute",
-            top: 85,
-            flexDirection: "row",
-          }}
-        >
-          {/* Current Turn: {currentTurn.toUpperCase()} */}
-          <Image
-            style={{ width: 28, height: 28, marginTop: 3, marginRight: 3 }}
-            source={require("../../assets/trophy.png")}
-          />
-          <Text style={{ fontSize: 28, fontWeight: "600" }}>: 10</Text>
-        </View>
-        {currentTurn === "x" ? (
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: "700",
-              color: "#fff",
-              marginBottom: "auto",
-              position: "absolute",
-              top: 160,
-            }}
-          >
-            {/* Current Turn: {currentTurn.toUpperCase()} */}
-            Player 1's Turn
-          </Text>
+        {gameMode !== "LOCAL" ? (
+          <>
+            <View
+              style={{
+                color: "#000",
+                marginBottom: "auto",
+                position: "absolute",
+                top: 85,
+                flexDirection: "row",
+              }}
+            >
+              <Image
+                style={{ width: 28, height: 28, marginTop: 3, marginRight: 3 }}
+                source={require("../../assets/trophy.png")}
+              />
+              <Text style={{ fontSize: 28, fontWeight: "600" }}>10</Text>
+            </View>
+            <Text
+              style={{
+                fontSize: 24,
+                fontWeight: "700",
+                color: "#fff",
+                marginBottom: "auto",
+                position: "absolute",
+                top: 160,
+              }}
+            >
+              {/* Current Turn: {currentTurn.toUpperCase()} */}
+              Player {currentTurn.toUpperCase()}'s Turn
+            </Text>
+          </>
         ) : (
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: "700",
-              color: "#fff",
-              marginBottom: "auto",
-              position: "absolute",
-              top: 160,
-            }}
-          >
-            {/* Current Turn: {currentTurn.toUpperCase()} */}
-            Player 2's Turn
-          </Text>
+          <>
+            <View
+              style={{
+                color: "#000",
+                marginBottom: "auto",
+                position: "absolute",
+                top: 85,
+                flexDirection: "row",
+              }}
+            >
+              <Text style={{ fontSize: 28, fontWeight: "600" }}>Score</Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                position: "absolute",
+                top: 150,
+              }}
+            >
+              <View style={{ flexDirection: "column", alignItems: "center" }}>
+                <Text style={{ fontSize: 18, color: "#fff" }}>Player 1</Text>
+                <Text
+                  style={{ color: "#F54D62", fontSize: 40, fontWeight: "800" }}
+                >
+                  250
+                </Text>
+              </View>
+              <View
+                style={{
+                  borderColor: "#fff",
+                  borderWidth: 0.9,
+                  height: 30,
+                  marginHorizontal: 15,
+                }}
+              />
+              <View style={{ flexDirection: "column", alignItems: "center" }}>
+                <Text style={{ fontSize: 18, color: "#fff" }}>Player 2</Text>
+                <Text
+                  style={{ color: "#87E43A", fontSize: 40, fontWeight: "800" }}
+                >
+                  100
+                </Text>
+              </View>
+            </View>
+            {/* <Text
+              style={{
+                fontSize: 24,
+                fontWeight: "700",
+                color: "#fff",
+                marginBottom: "auto",
+                position: "absolute",
+                top: 160,
+              }}
+            >
+              player 1 | player 2
+            </Text> */}
+          </>
         )}
+
         <View style={styles.map}>
           {map.map((row, rowIndex) => (
             // Now we map for each cell in that row
@@ -333,29 +385,33 @@ export default function HomeScreen() {
       >
         <View style={styles.buttons}>
           <Text
+            onPress={() => setGameMode("LOCAL")}
             style={[
               styles.button,
-              { backgroundColor: gameMode === "LOCAL" ? "#00D2FF" : "3AB0FF" },
+              { backgroundColor: gameMode === "LOCAL" ? "#00D2FF" : "#3AB0FF" },
             ]}
           >
             Multiplayer
           </Text>
           <Text
+            onPress={() => setGameMode("BOT_EASY")}
             style={[
               styles.button,
               {
-                backgroundColor: gameMode === "BOT_EASY" ? "#00D2FF" : "3AB0FF",
+                backgroundColor:
+                  gameMode === "BOT_EASY" ? "#00D2FF" : "#3AB0FF",
               },
             ]}
           >
             Easy
           </Text>
           <Text
+            onPress={() => setGameMode("BOT_MEDIUM")}
             style={[
               styles.button,
               {
                 backgroundColor:
-                  gameMode === "BOT_MEDIUM" ? "#00D2FF" : "3AB0FF",
+                  gameMode === "BOT_MEDIUM" ? "#00D2FF" : "#3AB0FF",
               },
             ]}
           >
