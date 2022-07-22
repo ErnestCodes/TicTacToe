@@ -8,6 +8,7 @@ import {
   Pressable,
   Alert,
   SafeAreaView,
+  Image,
 } from "react-native";
 import bg from "../../assets/bg.png";
 import { Audio } from "expo-av";
@@ -29,7 +30,8 @@ const copyArray = (original) => {
 
 export default function HomeScreen() {
   const [map, setMap] = useState(emptyMap);
-  const [gameMode, setGameMode] = useState("BOT_MEDIUM");
+  const [gameMode, setGameMode] = useState("LOCAL");
+  const [gameSetting, setGameSetting] = useState();
   // Local, BOT_EASY, BOT_MEDIUM
   const [currentTurn, setCurrentTurn] = useState("x");
   const [sound, setSound] = useState(null);
@@ -55,6 +57,17 @@ export default function HomeScreen() {
       require("../../assets/sounds/cash.mp3")
     );
     setSound(sound);
+
+    // console.log("Playing Sound");
+    await sound.playAsync();
+  }
+
+  async function playSoundAww() {
+    console.log("Loading Sound");
+    const { sound } = await Audio.Sound.createAsync(
+      require("../../assets/sounds/aww.mp3")
+    );
+    // setSoundTwo(sound);
 
     // console.log("Playing Sound");
     await sound.playAsync();
@@ -178,7 +191,11 @@ export default function HomeScreen() {
 
     if (player == "x") {
       playSound();
+    } else {
+      playSoundAww();
     }
+
+    // resetGame();
   };
 
   // reset game
@@ -247,17 +264,51 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground source={bg} style={styles.bg} resizeMode="contain">
-        <Text
+        <View
           style={{
-            fontSize: 24,
-            color: "white",
+            color: "#000",
             marginBottom: "auto",
             position: "absolute",
-            top: 30,
+            top: 85,
+            flexDirection: "row",
           }}
         >
-          Current Turn: {currentTurn.toUpperCase()}
-        </Text>
+          {/* Current Turn: {currentTurn.toUpperCase()} */}
+          <Image
+            style={{ width: 28, height: 28, marginTop: 3, marginRight: 3 }}
+            source={require("../../assets/trophy.png")}
+          />
+          <Text style={{ fontSize: 28, fontWeight: "600" }}>: 10</Text>
+        </View>
+        {currentTurn === "x" ? (
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: "700",
+              color: "#fff",
+              marginBottom: "auto",
+              position: "absolute",
+              top: 160,
+            }}
+          >
+            {/* Current Turn: {currentTurn.toUpperCase()} */}
+            Player 1's Turn
+          </Text>
+        ) : (
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: "700",
+              color: "#fff",
+              marginBottom: "auto",
+              position: "absolute",
+              top: 160,
+            }}
+          >
+            {/* Current Turn: {currentTurn.toUpperCase()} */}
+            Player 2's Turn
+          </Text>
+        )}
         <View style={styles.map}>
           {map.map((row, rowIndex) => (
             // Now we map for each cell in that row
@@ -272,12 +323,46 @@ export default function HomeScreen() {
             </View>
           ))}
         </View>
-        <View style={styles.buttons}>
-          <Text style={[styles.button]}>Local</Text>
-          <Text style={[styles.button]}>Easy</Text>
-          <Text style={[styles.button]}>Medium</Text>
-        </View>
       </ImageBackground>
+      <View
+        style={{
+          position: "absolute",
+          alignItems: "center",
+          bottom: 0,
+        }}
+      >
+        <View style={styles.buttons}>
+          <Text
+            style={[
+              styles.button,
+              { backgroundColor: gameMode === "LOCAL" ? "#00D2FF" : "3AB0FF" },
+            ]}
+          >
+            Multiplayer
+          </Text>
+          <Text
+            style={[
+              styles.button,
+              {
+                backgroundColor: gameMode === "BOT_EASY" ? "#00D2FF" : "3AB0FF",
+              },
+            ]}
+          >
+            Easy
+          </Text>
+          <Text
+            style={[
+              styles.button,
+              {
+                backgroundColor:
+                  gameMode === "BOT_MEDIUM" ? "#00D2FF" : "3AB0FF",
+              },
+            ]}
+          >
+            Medium
+          </Text>
+        </View>
+      </View>
       <StatusBar style="auto" />
     </SafeAreaView>
   );
@@ -314,9 +399,9 @@ const styles = StyleSheet.create({
     color: "white",
     margin: 10,
     fontSize: 16,
-    backgroundColor: "#6C92C7",
+    backgroundColor: "#3AB4F2",
     padding: 10,
-    borderRadius: 50,
+    borderColor: "red",
     paddingHorizontal: 15,
   },
 });
