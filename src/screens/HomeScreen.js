@@ -13,6 +13,12 @@ import {
 import bg from "../../assets/bg.png";
 import { Audio } from "expo-av";
 import Cell from "../components/Cell";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setPlayerOneScore,
+  setPlayerTwoScore,
+  setReset,
+} from "../features/score/scoreSlice";
 
 const emptyMap = [
   // defining my 2D grid/matrix
@@ -35,6 +41,12 @@ export default function HomeScreen() {
   // Local, BOT_EASY, BOT_MEDIUM
   const [currentTurn, setCurrentTurn] = useState("x");
   const [sound, setSound] = useState(null);
+
+  const { playerOneScore, playerTwoScore } = useSelector(
+    (state) => state.score
+  );
+
+  const dispatch = useDispatch();
 
   useEffect(() => resetGame(), [gameMode]);
 
@@ -192,8 +204,10 @@ export default function HomeScreen() {
     ]);
 
     if (player == "x") {
+      dispatch(setPlayerOneScore());
       playSound();
     } else {
+      dispatch(setPlayerTwoScore());
       playSoundAww();
     }
 
@@ -302,6 +316,22 @@ export default function HomeScreen() {
           </>
         ) : (
           <>
+            <Pressable
+              style={{
+                color: "red",
+                marginBottom: "auto",
+                position: "absolute",
+                top: 30,
+                right: 5,
+              }}
+              onPress={() => dispatch(setReset())}
+            >
+              <Image
+                resizeMode="contain"
+                style={{ height: 27 }}
+                source={require("../../assets/undo.png")}
+              />
+            </Pressable>
             <View
               style={{
                 color: "#000",
@@ -326,7 +356,7 @@ export default function HomeScreen() {
                 <Text
                   style={{ color: "#F54D62", fontSize: 40, fontWeight: "800" }}
                 >
-                  250
+                  {playerOneScore}
                 </Text>
               </View>
               <View
@@ -342,7 +372,7 @@ export default function HomeScreen() {
                 <Text
                   style={{ color: "#87E43A", fontSize: 40, fontWeight: "800" }}
                 >
-                  100
+                  {playerTwoScore}
                 </Text>
               </View>
             </View>
