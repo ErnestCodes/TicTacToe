@@ -55,6 +55,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (currentTurn == "o" && gameMode !== "LOCAL") {
+      // setTimeout(() => botTurn(), 1000);
       botTurn();
     }
   }, [currentTurn, gameMode]);
@@ -199,27 +200,36 @@ export default function HomeScreen() {
   };
 
   const gameWon = (player) => {
-    if (player == "x") {
-      dispatch(setPlayerOneScore());
+    if (gameMode === "BOT_EASY" && player === "x") {
+      dispatch(setTrophyScoreEasy());
       playSound();
-    } else {
-      dispatch(setPlayerTwoScore());
+    } else if (gameMode === "BOT_EASY" && player !== "x") {
       playSoundAww();
     }
 
-    if (gameMode == "BOT_EASY" && player == "x") {
-      dispatch(setTrophyScoreEasy());
-    } else if (gameMode == "BOT_MEDIUM" && player == "x") {
+    if (gameMode === "BOT_MEDIUM" && player === "x") {
+      playSound();
       dispatch(setTrophyScoreMedium());
+    } else if (gameMode === "BOT_MEDIUM" && player !== "x") {
+      playSoundAww();
     }
 
-    Alert.alert(`Hurray`, `Player ${player} won`, [
-      {
-        text: "Reset",
-        onPress: resetGame,
-      },
-    ]);
-    // resetGame();
+    if (gameMode === "LOCAL" && player === "x") {
+      playSound();
+      dispatch(setPlayerOneScore());
+    } else if (gameMode === "LOCAL" && player !== "x") {
+      playSoundAww();
+      dispatch(setPlayerTwoScore());
+    }
+
+    // Alert.alert(`Hurray`, `Player ${player} won`, [
+    //   {
+    //     text: "Reset",
+    //     onPress: resetGame,
+    //   },
+    // ]);
+
+    setTimeout(() => resetGame(), 100);
   };
 
   // reset game
