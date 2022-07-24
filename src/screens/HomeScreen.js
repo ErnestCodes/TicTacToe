@@ -18,6 +18,11 @@ import {
   setPlayerOneScore,
   setPlayerTwoScore,
   setReset,
+  setResetEasy,
+  setResetMedium,
+  setTrophyScore,
+  setTrophyScoreEasy,
+  setTrophyScoreMedium,
 } from "../features/score/scoreSlice";
 
 const emptyMap = [
@@ -41,12 +46,10 @@ export default function HomeScreen() {
   // Local, BOT_EASY, BOT_MEDIUM
   const [currentTurn, setCurrentTurn] = useState("x");
   const [sound, setSound] = useState(null);
-
-  const { playerOneScore, playerTwoScore } = useSelector(
-    (state) => state.score
-  );
-
   const dispatch = useDispatch();
+
+  const { playerOneScore, playerTwoScore, easyScore, mediumScore } =
+    useSelector((state) => state.score);
 
   useEffect(() => resetGame(), [gameMode]);
 
@@ -196,13 +199,6 @@ export default function HomeScreen() {
   };
 
   const gameWon = (player) => {
-    Alert.alert(`Hurray`, `Player ${player} won`, [
-      {
-        text: "Reset",
-        onPress: resetGame,
-      },
-    ]);
-
     if (player == "x") {
       dispatch(setPlayerOneScore());
       playSound();
@@ -211,6 +207,18 @@ export default function HomeScreen() {
       playSoundAww();
     }
 
+    if (gameMode == "BOT_EASY" && player == "x") {
+      dispatch(setTrophyScoreEasy());
+    } else if (gameMode == "BOT_MEDIUM" && player == "x") {
+      dispatch(setTrophyScoreMedium());
+    }
+
+    Alert.alert(`Hurray`, `Player ${player} won`, [
+      {
+        text: "Reset",
+        onPress: resetGame,
+      },
+    ]);
     // resetGame();
   };
 
@@ -283,8 +291,24 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground source={bg} style={styles.bg} resizeMode="contain">
-        {gameMode !== "LOCAL" ? (
+        {gameMode == "BOT_EASY" ? (
           <>
+            <Pressable
+              style={{
+                color: "red",
+                marginBottom: "auto",
+                position: "absolute",
+                top: 30,
+                right: 5,
+              }}
+              onPress={() => dispatch(setResetEasy())}
+            >
+              <Image
+                resizeMode="contain"
+                style={{ height: 27 }}
+                source={require("../../assets/undo.png")}
+              />
+            </Pressable>
             <View
               style={{
                 color: "#000",
@@ -298,7 +322,58 @@ export default function HomeScreen() {
                 style={{ width: 28, height: 28, marginTop: 3, marginRight: 3 }}
                 source={require("../../assets/trophy.png")}
               />
-              <Text style={{ fontSize: 28, fontWeight: "600" }}>10</Text>
+              <Text style={{ fontSize: 28, fontWeight: "600" }}>
+                {easyScore}
+              </Text>
+            </View>
+            <Text
+              style={{
+                fontSize: 24,
+                fontWeight: "700",
+                color: "#fff",
+                marginBottom: "auto",
+                position: "absolute",
+                top: 160,
+              }}
+            >
+              {/* Current Turn: {currentTurn.toUpperCase()} */}
+              Player {currentTurn.toUpperCase()}'s Turn
+            </Text>
+          </>
+        ) : gameMode == "BOT_MEDIUM" ? (
+          <>
+            <Pressable
+              style={{
+                color: "red",
+                marginBottom: "auto",
+                position: "absolute",
+                top: 30,
+                right: 5,
+              }}
+              onPress={() => dispatch(setResetMedium())}
+            >
+              <Image
+                resizeMode="contain"
+                style={{ height: 27 }}
+                source={require("../../assets/undo.png")}
+              />
+            </Pressable>
+            <View
+              style={{
+                color: "#000",
+                marginBottom: "auto",
+                position: "absolute",
+                top: 85,
+                flexDirection: "row",
+              }}
+            >
+              <Image
+                style={{ width: 28, height: 28, marginTop: 3, marginRight: 3 }}
+                source={require("../../assets/trophy.png")}
+              />
+              <Text style={{ fontSize: 28, fontWeight: "600" }}>
+                {mediumScore}
+              </Text>
             </View>
             <Text
               style={{
