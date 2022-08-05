@@ -4,6 +4,7 @@ import {
   ImageBackground,
   StyleSheet,
   Text,
+  Platform,
   View,
   Pressable,
   Alert,
@@ -308,7 +309,7 @@ export default function HomeScreen() {
                 color: "red",
                 marginBottom: "auto",
                 position: "absolute",
-                top: 30,
+                top: Platform.OS == "android" ? 50 : 30,
                 right: 5,
               }}
               onPress={() => dispatch(setResetEasy())}
@@ -324,12 +325,17 @@ export default function HomeScreen() {
                 color: "#000",
                 marginBottom: "auto",
                 position: "absolute",
-                top: 85,
+                top: Platform.OS == "android" ? 115 : 85,
                 flexDirection: "row",
               }}
             >
               <Image
-                style={{ width: 28, height: 28, marginTop: 3, marginRight: 3 }}
+                style={{
+                  width: 28,
+                  height: 28,
+                  marginTop: Platform.OS == "android" ? 5 : 3,
+                  marginRight: 3,
+                }}
                 source={require("../../assets/trophy.png")}
               />
               <Text style={{ fontSize: 28, fontWeight: "600" }}>
@@ -343,7 +349,7 @@ export default function HomeScreen() {
                 color: "#fff",
                 marginBottom: "auto",
                 position: "absolute",
-                top: 160,
+                top: Platform.OS == "android" ? 175 : 160,
               }}
             >
               {/* Current Turn: {currentTurn.toUpperCase()} */}
@@ -357,7 +363,7 @@ export default function HomeScreen() {
                 color: "red",
                 marginBottom: "auto",
                 position: "absolute",
-                top: 30,
+                top: Platform.OS == "android" ? 50 : 30,
                 right: 5,
               }}
               onPress={() => dispatch(setResetMedium())}
@@ -373,12 +379,17 @@ export default function HomeScreen() {
                 color: "#000",
                 marginBottom: "auto",
                 position: "absolute",
-                top: 85,
+                top: Platform.OS == "android" ? 115 : 85,
                 flexDirection: "row",
               }}
             >
               <Image
-                style={{ width: 28, height: 28, marginTop: 3, marginRight: 3 }}
+                style={{
+                  width: 28,
+                  height: 28,
+                  marginTop: Platform.OS == "android" ? 5 : 3,
+                  marginRight: 3,
+                }}
                 source={require("../../assets/trophy.png")}
               />
               <Text style={{ fontSize: 28, fontWeight: "600" }}>
@@ -392,7 +403,7 @@ export default function HomeScreen() {
                 color: "#fff",
                 marginBottom: "auto",
                 position: "absolute",
-                top: 160,
+                top: Platform.OS == "android" ? 175 : 160,
               }}
             >
               {/* Current Turn: {currentTurn.toUpperCase()} */}
@@ -406,7 +417,7 @@ export default function HomeScreen() {
                 color: "red",
                 marginBottom: "auto",
                 position: "absolute",
-                top: 30,
+                top: Platform.OS == "android" ? 50 : 30,
                 right: 5,
               }}
               onPress={() => dispatch(setReset())}
@@ -422,7 +433,7 @@ export default function HomeScreen() {
                 color: "#000",
                 marginBottom: "auto",
                 position: "absolute",
-                top: 85,
+                top: Platform.OS == "android" ? 110 : 85,
                 flexDirection: "row",
               }}
             >
@@ -433,7 +444,7 @@ export default function HomeScreen() {
                 flexDirection: "row",
                 alignItems: "center",
                 position: "absolute",
-                top: 150,
+                top: Platform.OS == "android" ? 168 : 150,
               }}
             >
               <View style={{ flexDirection: "column", alignItems: "center" }}>
@@ -461,18 +472,6 @@ export default function HomeScreen() {
                 </Text>
               </View>
             </View>
-            {/* <Text
-              style={{
-                fontSize: 24,
-                fontWeight: "700",
-                color: "#fff",
-                marginBottom: "auto",
-                position: "absolute",
-                top: 160,
-              }}
-            >
-              player 1 | player 2
-            </Text> */}
           </>
         )}
 

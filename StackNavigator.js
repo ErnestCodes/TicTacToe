@@ -1,16 +1,28 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Onboarding from "./src/components/Onboarding";
+import UseOnboarding from "./src/hooks/useOnboarding";
 import HomeScreen from "./src/screens/HomeScreen";
 
 const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
+  const { viewedOnboarding } = UseOnboarding();
   return (
-    <Stack.Navigator
-      screenOptions={{ headerShown: false }}
-      initialRouteName="Home"
-    >
-      <Stack.Screen name="Home" component={HomeScreen} />
-    </Stack.Navigator>
+    <>
+      {viewedOnboarding ? (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        </Stack.Navigator>
+      ) : (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen
+            name="HomeScreen"
+            component={!viewedOnboarding && HomeScreen}
+          />
+          <Stack.Screen name="OnboardingScreen" component={Onboarding} />
+        </Stack.Navigator>
+      )}
+    </>
   );
 };
 
