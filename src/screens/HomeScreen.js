@@ -325,7 +325,7 @@ export default function HomeScreen() {
                 color: "#000",
                 marginBottom: "auto",
                 position: "absolute",
-                top: Platform.OS == "android" ? 115 : 85,
+                top: Platform.OS == "android" ? 80 : 85,
                 flexDirection: "row",
               }}
             >
@@ -379,7 +379,7 @@ export default function HomeScreen() {
                 color: "#000",
                 marginBottom: "auto",
                 position: "absolute",
-                top: Platform.OS == "android" ? 115 : 85,
+                top: Platform.OS == "android" ? 80 : 85,
                 flexDirection: "row",
               }}
             >
@@ -433,7 +433,7 @@ export default function HomeScreen() {
                 color: "#000",
                 marginBottom: "auto",
                 position: "absolute",
-                top: Platform.OS == "android" ? 110 : 85,
+                top: Platform.OS == "android" ? 80 : 85,
                 flexDirection: "row",
               }}
             >
@@ -444,7 +444,7 @@ export default function HomeScreen() {
                 flexDirection: "row",
                 alignItems: "center",
                 position: "absolute",
-                top: Platform.OS == "android" ? 168 : 150,
+                top: Platform.OS == "android" ? 150 : 150,
               }}
             >
               <View style={{ flexDirection: "column", alignItems: "center" }}>

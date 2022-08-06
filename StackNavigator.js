@@ -9,19 +9,13 @@ const StackNavigator = () => {
   const { viewedOnboarding } = UseOnboarding();
   return (
     <>
-      {viewedOnboarding ? (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="HomeScreen" component={HomeScreen} />
-        </Stack.Navigator>
-      ) : (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen
-            name="HomeScreen"
-            component={!viewedOnboarding && HomeScreen}
-          />
-          <Stack.Screen name="OnboardingScreen" component={Onboarding} />
-        </Stack.Navigator>
-      )}
+      <Stack.Navigator
+        initialRouteName="OnboardingScreen"
+        screenOptions={{ headerShown: false }}
+      >
+        <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="OnboardingScreen" component={Onboarding} />
+      </Stack.Navigator>
     </>
   );
 };
