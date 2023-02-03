@@ -42,7 +42,7 @@ const copyArray = (original) => {
 
 export default function HomeScreen() {
   const [map, setMap] = useState(emptyMap);
-  const [gameMode, setGameMode] = useState("BOT_MEDIUM");
+  const [gameMode, setGameMode] = useState("LOCAL");
   const [gameSetting, setGameSetting] = useState();
   // Local, BOT_EASY, BOT_MEDIUM
   const [currentTurn, setCurrentTurn] = useState("x");
@@ -71,7 +71,7 @@ export default function HomeScreen() {
   }, [map]);
 
   async function playSound() {
-    console.log("Loading Sound");
+    // console.log("Loading Sound");
     const { sound } = await Audio.Sound.createAsync(
       require("../../assets/sounds/cash.mp3")
     );

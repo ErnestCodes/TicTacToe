@@ -2,9 +2,9 @@
   "expo": {
     "name": "TicTacToe",
     "slug": "tictactoe",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
-    "icon": "./assets/test.jpeg",
+    "icon": "./assets/app.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -19,8 +19,8 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.tictactoegame.app",
-      "versionCode": 1,
+      "package": "tm.tictactoe",
+      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

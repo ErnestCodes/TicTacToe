@@ -10,7 +10,9 @@ const StackNavigator = () => {
   return (
     <>
       <Stack.Navigator
-        initialRouteName="OnboardingScreen"
+        initialRouteName={
+          viewedOnboarding === true ? "HomeScreen" : "OnboardingScreen"
+        }
         screenOptions={{ headerShown: false }}
       >
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
